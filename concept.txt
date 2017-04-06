@@ -1,0 +1,92 @@
+import java.util.Random;
+import java.util.Scanner;
+
+//looks like it will be necessary to make a pile class anyway
+
+public class nimconcept {
+
+	//The game
+		public static void main(String[] args) {
+			//This block sets up the values we are going to use during the game.
+			int PileA, PileB, PileC, player1, player2, jackpot;
+			boolean player_turn = true;
+			String choice, quit = "y";
+			Scanner keyboard = new Scanner(System.in);
+			
+			System.out.print("Welcome to NIM!\n");
+			while (quit.charAt(0) != 'n') {
+				System.out.println("Setting up new game...\n");
+
+				//This code block sets up an instance of the game.
+				PileA = newPile();
+				PileB = newPile();
+				PileC = newPile();
+				jackpot = newJackpot();
+
+				//game "rendering"; all values are set up at this point.
+				showPiles(PileA, PileB, PileC);
+				showJackpot(jackpot);
+
+				//run until the player has finished his or her turn
+				while (player_turn == true) {
+					//TODO: SET UP ACTIVE PILE
+					//Take from active pile or take jackpot
+					System.out.printf("Take from pile %s?", "A");
+					choice = keyboard.nextLine();
+					if (choice.length() > 0) {
+						//ghetto loop
+						if (i == 1) {
+							PileA -= choice;
+						}
+						//Take value of choice from the relevant pile.
+						player_turn = false;
+					}
+					i++;
+					if (i > 3) {
+						i = 1;
+					}
+				}
+				
+				System.out.println("Generate again? ");
+				quit = keyboard.nextLine();
+			}
+			
+		}
+
+		//displays each Pile and the values inside.
+		public static void showPiles(int A, int B, int C) {
+			System.out.printf("Pile 1: %d\nPile 2: %d\nPile 3: %d\n", A, B, C);
+		}
+
+		//displays the jackpot
+		public static void showJackpot(int jackpot) {
+			//Preformatting to prevent ugly stuff like "$-38 dollars"
+			String format_pot = ("$" + Math.abs(jackpot));
+			if (jackpot < 0) {
+				format_pot = ("-" + format_pot);
+			}
+			System.out.printf("\nThe jackpot is %s dollars.\n", format_pot);
+		}
+		
+		//newPile() creates an anonymous random number from 100 to 4
+		public static int newPile() {
+			Random rando = new Random();
+			int x = rando.nextInt(100) + 4;
+			return x;
+		}
+		
+		//newJackPot() creates a random number from -300 to 600
+		public static int newJackpot() {
+			Random rando = new Random();
+			int base = rando.nextInt(300);
+			switch (rando.nextInt(2)) {
+				case 1:
+					base *= -1;
+					break;
+				case 2:
+					base *= 2;
+			}
+			return base;
+		}
+
+}
