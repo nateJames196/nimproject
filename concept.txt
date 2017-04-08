@@ -7,6 +7,8 @@ public class nimgame {
 		public static void main(String[] args) {
 			//Core gameplay values, all integers. The Piles range from +100 to +4.
 			int PileA, PileB, PileC, jackpot;
+			//value representing the currently active pile. By default this is A.
+			int active_pile;
 			//Values representing the amount of money owned by each player.
 			int player1, player2;
 			//Value representing whether or not the game is actively accepting input.
@@ -14,7 +16,8 @@ public class nimgame {
 			//Instance of a scanner object, which we can use to take player input.
 			Scanner keyboard = new Scanner(System.in);
 			//Variables to control the while loop.
-			String choice, quit;
+			String input_choice, quit;
+			int choice;
 			quit = "";
 			//quit is declared before use so we can refer to length in a while loop
 			//we would not need to declare it if we used a do...while() loop instead
@@ -28,6 +31,7 @@ public class nimgame {
 				PileB = newPile();
 				PileC = newPile();
 				jackpot = newJackpot();
+				active_pile = PileA;
 
 				//game "rendering"; now that values are set up, time to display them.
 				showPiles(PileA, PileB, PileC);
@@ -35,18 +39,24 @@ public class nimgame {
 
 				//While loop that runs until the player has taken a turn.
 				while (interaction == true) {
-					//TODO: SET UP ACTIVE PILE
-					//TODO: CODE
-					//Take from the active pile.
 					System.out.printf("Take from pile %s?", "A");
-					choice = keyboard.nextLine();
-					/*We will need to validate here to make sure choice is
-					1, an integer and 2, ranging from 1 to 3.
-					anything else, we need to switch piles and present another choice
-					the player has no choice but to take the jackpot if available
-					we should validate for that as well*/
-					if (choice.length() > 0) {
-						//Take value of choice from the relevant pile.
+					input_choice = keyboard.nextLine();
+					/*Since keyboard.nextLine() produces a string, we have to
+					 * 1. Validate to ensure that we actually received an integer
+					 * 2. Parse the value of input_choice into an integer variable*/
+					if (input_choice.length() != 1 || input_choice.charAt(0) > 9) {
+						choice = 0;
+					} else {
+						choice = Integer.parseInt(input_choice);
+					}
+					/* Now that we know our value is actually an integer, we can pass it
+					 * to validChoice() to determine if we can actually take it from the
+					 * active_pile. Note that validChoice returns true or false. 
+					 */
+					if (validChoice(choice, active_pile)) {
+						//Success!
+						//TODO: Take value of choice from active_pile
+						//The player has taken a turn, so now their opponent gets a turn.
 						interaction = false;
 					} else {
 						//player entered an inactive value, so we switch to the next pile
@@ -112,6 +122,19 @@ public class nimgame {
 					base *= 2;
 			}
 			return base;
+		}
+		
+		public static boolean validChoice(int choice, int pile) {
+			if (choice >= 4) {
+				return false;
+			}
+			if (choice <= 0) {
+				return false;
+			}
+			if (choice > pile) {
+				return false;
+			}
+			return true;
 		}
 
 }
