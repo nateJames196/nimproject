@@ -1,72 +1,86 @@
+
 import java.util.Random;
 import java.util.Scanner;
 
 //class name can be anything, but it must be defined in its own file.
 public class nimgame {
+	
+	public static void main(String[] args) {
+		//Setting up instances of our pile class
+		Pile pileA = new Pile("A");
+		Pile pileB = new Pile("B");
+		Pile pileC = new Pile("C");
+		//The jackpot is special. We have to redefine its lower and upper limits
+		Pile jackpot = new Pile("J");
+		jackpot.lowerlimit = -300;
+		jackpot.upperlimit = 600;
+		
+		/*The value below will be used to hold the pile the player is currently 
+		 * interacting with. Note: we are not creating an instance of the pile class here,
+		 * we are creating a variable of the TYPE pile, similar to the way we would create
+		 * a string.
+		*/
+		Pile active_pile;
+		
+		//Values below represent the amount of money owned by each player.
+		int player1, player2;
+		
+		//Value denotes whether or not the game is actively accepting input.
+		boolean interaction = true;
+		
+		//Instance of a scanner object, which we can use to take player input.
+		Scanner keyboard = new Scanner(System.in);
+		
+		//Variables below are used to control the while loop.
+		String input_choice, quit;
+		int choice;
+		quit = "";
+		//quit is declared before use so we can refer to length in a while loop
+		//we would not need to declare it if we used a do...while() loop instead
+		System.out.print("Welcome to NIM!\n");
+		while (quit.length() < 1) {
+			System.out.println("Setting up new game...\n");
+			//This code block sets up an instance of the game.
+			pileA.setVal();
+			pileB.setVal();
+			pileC.setVal();
+			jackpot.setVal();
+			active_pile = pileA;
 
-		public static void main(String[] args) {
-			//Core gameplay values, all integers. The Piles range from +100 to +4.
-			int PileA, PileB, PileC, jackpot;
-			//value representing the currently active pile. By default this is A.
-			int active_pile;
-			//Values representing the amount of money owned by each player.
-			int player1, player2;
-			//Value representing whether or not the game is actively accepting input.
-			boolean interaction = true;
-			//Instance of a scanner object, which we can use to take player input.
-			Scanner keyboard = new Scanner(System.in);
-			//Variables to control the while loop.
-			String input_choice, quit;
-			int choice;
-			quit = "";
-			//quit is declared before use so we can refer to length in a while loop
-			//we would not need to declare it if we used a do...while() loop instead
+			//game "rendering"; now that values are set up, time to display them.
+			showPiles(pileA.value, pileB.value, pileC.value);
+			showJackpot(jackpot.value);
 
-			System.out.print("Welcome to NIM!\n");
-			while (quit.length() < 1) {
-				System.out.println("Setting up new game...\n");
-
-				//This code block sets up an instance of the game.
-				PileA = newPile();
-				PileB = newPile();
-				PileC = newPile();
-				jackpot = newJackpot();
-				active_pile = PileA;
-
-				//game "rendering"; now that values are set up, time to display them.
-				showPiles(PileA, PileB, PileC);
-				showJackpot(jackpot);
-
-				//While loop that runs until the player has taken a turn.
-				while (interaction == true) {
-					System.out.printf("Take from pile %s?", "A");
-					input_choice = keyboard.nextLine();
-					/*Since keyboard.nextLine() produces a string, we have to
-					 * 1. Validate to ensure that we actually received an integer
-					 * 2. Parse the value of input_choice into an integer variable*/
-					if (input_choice.length() != 1 || input_choice.charAt(0) > 9) {
-						choice = 0;
-					} else {
-						choice = Integer.parseInt(input_choice);
-					}
-					/* Now that we know our value is actually an integer, we can pass it
-					 * to validChoice() to determine if we can actually take it from the
-					 * active_pile. Note that validChoice returns true or false. 
-					 */
-					if (validChoice(choice, active_pile)) {
-						//Success!
-						//TODO: Take value of choice from active_pile
-						//The player has taken a turn, so now their opponent gets a turn.
-						interaction = false;
-					} else {
-						//player entered an inactive value, so we switch to the next pile
-					}
+			//While loop that runs until the player has taken a turn.
+			while (interaction == true) {
+				System.out.printf("Take from pile %c?", active_pile.name);
+				input_choice = keyboard.nextLine();
+				/*Since keyboard.nextLine() produces a string, we have to
+				* 1. Validate to ensure that we actually received an integer
+				* 2. Parse the value of input_choice into an integer variable*/
+				if (input_choice.length() != 1 || input_choice.charAt(0) > 9) {
+					choice = 0;
+				} else {
+					choice = Integer.parseInt(input_choice);
+				}
+				/* Now that we know our value is actually an integer, we can pass it
+				 * to validChoice() to determine if we can actually take it from the
+				 * active_pile. Note that validChoice returns true or false. 
+				 */
+				if (validChoice(choice, active_pile.value)) {
+					//Success!
+					//TODO: Take value of choice from active_pile
+					//The player has taken a turn, so now their opponent gets a turn.
+					interaction = false;
+				} else {
+					//player entered an inactive value, so we switch to the next pile
 				}
 			}
-				
-				System.out.println("Press enter to generate again? ");
-				quit = keyboard.nextLine();
 		}
+				
+		System.out.println("Press enter to generate again? ");
+		quit = keyboard.nextLine();
+	}
 
 		/**
 		 * showPiles(); is visually cleaner than the messy printf below
@@ -90,38 +104,6 @@ public class nimgame {
 				format_pot = ("-" + format_pot);
 			}
 			System.out.printf("\nThe jackpot is %s dollars.\n", format_pot);
-		}
-		
-		/**
-		 * newPile() creates a random number from 104 to 4, and returns it
-		 * we use this function to create each of the "piles"
-		 * Random().nextInt returns a random integer from 100 to 0
-		 * we don't want to have a pile with nothing in it(not to start with) so,
-		 * I decided to give it a minimum value; outputs now range from 104 to 4
-		 */
-		public static int newPile() {
-			Random rando = new Random();
-			int x = rando.nextInt(100) + 4;
-			return x;
-		}
-		
-		/**
-		 * newJackPot() creates a random number from -300 to 600, and returns it
-		 * we use this function to create the integer "jackpot"
-		 * we start with a random number from 300 to 1
-		 * then, we either make it negative or multiply by 2
-		 */
-		public static int newJackpot() {
-			Random rando = new Random();
-			int base = rando.nextInt(300) + 1;
-			switch (rando.nextInt(2)) {
-				case 1:
-					base *= -1;
-					break;
-				case 2:
-					base *= 2;
-			}
-			return base;
 		}
 		
 		public static boolean validChoice(int choice, int pile) {
