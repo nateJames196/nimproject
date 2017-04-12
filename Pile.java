@@ -25,25 +25,12 @@ public class Pile {
 		this.name = inputname.charAt(0);
 		return;
 	}
-	/**
-	 *
-	 * For our purposes, we will only ever use this for Pile J(jackpot) to decrease its lower bounds.
-	 */
-	public void setMin(int lowlimit) {
-		this.lowerlimit = lowlimit;
-		return;
-	}
-	/**
-	 *
-	 * For our purposes, we will only ever use this for Pile J(jackpot) to decrease its higher bounds.
-	 */
-	public void setMax(int uplimit) {
-		this.upperlimit = uplimit;
-		return;
-	}
 	public void setVal() {
 		Random rando = new Random();
 		this.value = rando.nextInt(this.upperlimit) + this.lowerlimit;
+		if (this.value == 0) {
+			this.value++;
+		}
 		return;
 	}
 }
