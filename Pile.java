@@ -20,11 +20,7 @@ public class Pile {
 	public Pile(String inputname) {
 		this.name = inputname.charAt(0);
 	}
-
-	public void setName(String inputname) {
-		this.name = inputname.charAt(0);
-		return;
-	}
+	
 	public void setVal() {
 		Random rando = new Random();
 		this.value = rando.nextInt(this.upperlimit) + this.lowerlimit;
@@ -32,5 +28,12 @@ public class Pile {
 			this.value++;
 		}
 		return;
+	}
+	
+	public boolean isValid() {
+		if (this.value != 0) {
+			return true;
+		}
+		return false;
 	}
 }
