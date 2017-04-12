@@ -31,9 +31,15 @@ public class Pile {
 	}
 	
 	public boolean isValid() {
+		//'J' is the name of jackpot, which the player should never be able to select.
+		if (this.name == 'J') {
+			return false;
+		}
+		//the player should not be able to select an empty pile
 		if (this.value != 0) {
 			return true;
 		}
+		
 		return false;
 	}
 }
