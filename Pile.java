@@ -20,11 +20,7 @@ public class Pile {
 	public Pile(String inputname) {
 		this.name = inputname.charAt(0);
 	}
-
-	public void setName(String inputname) {
-		this.name = inputname.charAt(0);
-		return;
-	}
+	
 	public void setVal() {
 		Random rando = new Random();
 		this.value = rando.nextInt(this.upperlimit) + this.lowerlimit;
@@ -32,5 +28,18 @@ public class Pile {
 			this.value++;
 		}
 		return;
+	}
+	
+	public boolean isValid() {
+		//'J' is the name of jackpot, which the player should never be able to select.
+		if (this.name == 'J') {
+			return false;
+		}
+		//the player should not be able to select an empty pile
+		if (this.value != 0) {
+			return true;
+		}
+		
+		return false;
 	}
 }
