@@ -22,10 +22,11 @@ public class nimgame {
 		Pile active_pile;
 		
 		//Values below represent the amount of money owned by each player.
-		int player1, player2;
+		int player1 = 0;
+		int player2 = 0;
 		
 		//Value denotes whether or not the game is actively accepting input.
-		boolean interaction = true;
+		boolean gameactive = true;
 		
 		//Instance of a scanner object, which we can use to take player input.
 		Scanner keyboard = new Scanner(System.in);
@@ -50,7 +51,7 @@ public class nimgame {
 			showJackpot(jackpot.value);
 
 			//While loop that runs until the player has taken a turn.
-			while (interaction == true) {
+			while (gameactive == true) {
 				/* The following block of code is a do...while statement that receives
 				 * player input and allows him or her to choose which pile to take from.
 				 */
@@ -73,8 +74,8 @@ public class nimgame {
 						}
 					}
 					else {
-						System.out.print("\nInvalid Input. ");
-						System.out.println("Please try again.");
+						//generic error text
+						invalidError();
 					}
 					if (active_pile.isValid() == false) {
 						System.out.println("\nThat choice is unavailable at this time. ");
@@ -91,17 +92,43 @@ public class nimgame {
 					input_choice = keyboard.nextLine();
 
 					if (validChoice(input_choice, active_pile.value) == true) {
-						//TODO: CODE
+						//Read comment block above validChoice() to understand next line.
+						active_pile.value -= input_choice.charAt(0);
 					} else {
-						
+						//generic error text
+						invalidError();
 					}
 				} while (validChoice(input_choice, active_pile.value) == false);
-				
+				/*
+				 * Did the player empty all piles? Yes? Give the jackpot to player 2
+				 * No? Player 2 takes a turn. 
+				 */
+				boolean jpot_available;
+				jpot_available = jackpotCheck(pileA.value, pileB.value, pileC.value);
+				if (jpot_available == true) {
+					player2 += jackpot.value;
+					gameactive = false;
+				} else {
+					enemyTurn();
+				}
+				/*
+				 * Did the opponent empty all piles? Yes? Give the jackpot to player 1
+				 * No? return to beginning of loop so player 1 can take a turn
+				 */
+				jpot_available = jackpotCheck(pileA.value, pileB.value, pileC.value);
+				if (jpot_available == true) {
+					player1 += jackpot.value;
+					gameactive = false;
+				}
 			}
+			System.out.println("Press enter to play another round. ");
+			quit = keyboard.nextLine();
 		}
-				
-		System.out.println("Press enter to generate again? ");
-		quit = keyboard.nextLine();
+	}
+	
+	public static void enemyTurn() {
+		//TODO
+		return;
 	}
 
 	/**
@@ -198,5 +225,11 @@ public class nimgame {
 		//The number input passed all these checks, so we can use it.
 		return true;
 	}
-
+	
+	public static boolean jackpotCheck(int A, int B, int C) {
+		if (A == 0 && A == B && A == C) {
+			return true;
+		}
+		return false;
+	}
 }
