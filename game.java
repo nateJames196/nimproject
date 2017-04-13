@@ -1,8 +1,9 @@
+package nimproject;
 
 import java.util.Scanner;
 
 //class name can be anything, but it must be defined in its own file.
-public class nimgame {
+public class game {
 	
 	public static void main(String[] args) {
 		//Setting up instances of our pile class
@@ -24,7 +25,7 @@ public class nimgame {
 		//Values below represent the amount of money owned by each player.
 		int player1 = 0;
 		int player2 = 0;
-		
+
 		//Value denotes whether or not the game is actively accepting input.
 		boolean gameactive = true;
 		
@@ -46,12 +47,11 @@ public class nimgame {
 			jackpot.setVal();
 			active_pile = pileA;
 
-			//game "rendering"; now that values are set up, time to display them.
-			showPiles(pileA.value, pileB.value, pileC.value);
-			showJackpot(jackpot.value);
-
-			//While loop that runs until the player has taken a turn.
+			//While loop that runs until the jackpot has been taken
 			while (gameactive == true) {
+				//game "rendering"; now that values are set up, time to display them.
+				showPiles(pileA.value, pileB.value, pileC.value);
+				showJackpot(jackpot.value);
 				/* The following block of code is a do...while statement that receives
 				 * player input and allows him or her to choose which pile to take from.
 				 */
@@ -59,7 +59,7 @@ public class nimgame {
 					System.out.print("Please enter the pile you would like to take from. ");
 					input_choice = keyboard.nextLine();
 
-					if (validInput(input_choice) != 1) {
+					if (validInput(input_choice) != 49) {
 					//Switch to decide which pile to use. if not 'B' or 'C', will be 'A'
 						switch (validInput(input_choice)) {
 							case 'B':
@@ -81,24 +81,29 @@ public class nimgame {
 						System.out.println("\nThat choice is unavailable at this time. ");
 						System.out.println("Please try again.");
 					}
-				} while (validInput(input_choice) == 1 && active_pile.isValid() == false);
+				} while (validInput(input_choice) == 49 || active_pile.isValid() == false);
+				System.out.print(validInput(input_choice));
 				
 				/* The following block of code is a do...while statement that receives
 				 * player input and allows him or her to choose how much to take from
 				 * the pile they have chosen.
 				 */
+				
+				int temp_value;
 				do {
+					temp_value = active_pile.value;
 					System.out.printf("Please enter the amount to take from pile %c. ", active_pile.name);
 					input_choice = keyboard.nextLine();
 
-					if (validChoice(input_choice, active_pile.value) == true) {
+					if (validChoice(input_choice, temp_value) == true) {
 						//Read comment block above validChoice() to understand next line.
-						active_pile.value -= input_choice.charAt(0);
+						active_pile.value -= input_choice.charAt(0) - 48;
 					} else {
 						//generic error text
 						invalidError();
 					}
-				} while (validChoice(input_choice, active_pile.value) == false);
+				} while (validChoice(input_choice, temp_value) == false);
+				System.out.printf("\nPLayer 1 took %c from pile %c\n", input_choice.charAt(0), active_pile.name);
 				/*
 				 * Did the player empty all piles? Yes? Give the jackpot to player 2
 				 * No? Player 2 takes a turn. 
@@ -137,7 +142,7 @@ public class nimgame {
 	 * showPiles() itself displays the value of each file.
 	 */
 	public static void showPiles(int A, int B, int C) {
-		System.out.printf("Pile 1: %d\nPile 2: %d\nPile 3: %d\n", A, B, C);
+		System.out.printf("Pile A: %d\nPile B: %d\nPile C: %d\n", A, B, C);
 		return;
 	}
 	
@@ -201,7 +206,8 @@ public class nimgame {
 			return false;
 		}
 		//String did not properly supply a number. Invalid.
-		if (input.charAt(0) > 9) {
+		//Remember: char '58' = 9, char '49' = 1
+		if (input.charAt(0) > 58 && input.charAt(0) < 48) {
 			return false;
 		}
 		/*
@@ -209,9 +215,9 @@ public class nimgame {
 		 * 1. Has a length of 1 or more, so it has indexes we can check.
 		 * 2. Has a number at index 0, so we know we can use it in an int.
 		 */
-		int choice = input.charAt(0);
+		int choice = input.charAt(0) - 48;
 		//4 or more. Number is too big.
-		if (choice >= 4) {
+		if (choice > 4) {
 			return false;
 		}
 		//0 or less. Number is too small.

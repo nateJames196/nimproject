@@ -1,3 +1,4 @@
+package nimproject;
 
 import java.util.Random;
 /**
@@ -13,8 +14,8 @@ import java.util.Random;
  */
 public class Pile {
 	public int value;
-	public int lowerlimit = 4;
-	public int upperlimit = 100;
+	public int lowerlimit = 5;
+	public int upperlimit = 21;
 	public char name;
 	
 	public Pile(String inputname) {
@@ -24,8 +25,11 @@ public class Pile {
 	public void setVal() {
 		Random rando = new Random();
 		this.value = rando.nextInt(this.upperlimit) + this.lowerlimit;
+		if (this.value > this.upperlimit) {
+			this.value = this.upperlimit;
+		}
 		if (this.value == 0) {
-			this.value++;
+			this.value = this.lowerlimit;
 		}
 		return;
 	}
