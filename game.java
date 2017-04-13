@@ -1,4 +1,4 @@
-package nimproject;
+//package nimproject;
 
 import java.util.Scanner;
 
@@ -12,8 +12,8 @@ public class game {
 		Pile pileC = new Pile("C");
 		//The jackpot is special. We have to redefine its lower and upper limits
 		Pile jackpot = new Pile("Jackpot");
-		jackpot.lowerlimit = -300;
-		jackpot.upperlimit = 600;
+		jackpot.lowerlimit = -50;
+		jackpot.upperlimit = 50;
 		
 		/*The value below will be used to hold the pile the player is currently 
 		 * interacting with. Note: we are not creating an instance of the pile class here,
@@ -78,11 +78,11 @@ public class game {
 						invalidError();
 					}
 					if (active_pile.isValid() == false) {
-						System.out.println("\nThat choice is unavailable at this time. ");
+						System.out.println();
+						System.out.println("That pile is unavailable.");
 						System.out.println("Please try again.");
 					}
 				} while (validInput(input_choice) == 49 || active_pile.isValid() == false);
-				System.out.print(validInput(input_choice));
 				
 				/* The following block of code is a do...while statement that receives
 				 * player input and allows him or her to choose how much to take from
@@ -103,7 +103,9 @@ public class game {
 						invalidError();
 					}
 				} while (validChoice(input_choice, temp_value) == false);
-				System.out.printf("\nPLayer 1 took %c from pile %c\n", input_choice.charAt(0), active_pile.name);
+				System.out.println("");
+				System.out.printf("Player 1 took $%c from pile %c", input_choice.charAt(0), active_pile.name);
+				System.out.println("");
 				/*
 				 * Did the player empty all piles? Yes? Give the jackpot to player 2
 				 * No? Player 2 takes a turn. 
@@ -118,12 +120,15 @@ public class game {
 				}
 				/*
 				 * Did the opponent empty all piles? Yes? Give the jackpot to player 1
-				 * No? return to beginning of loop so player 1 can take a turn
+				 * No? Show the standings and return to the beginning of the loop
+				 * so the player can take another turn.
 				 */
 				jpot_available = jackpotCheck(pileA.value, pileB.value, pileC.value);
 				if (jpot_available == true) {
 					player1 += jackpot.value;
 					gameactive = false;
+				} else {
+					showTotals(player1, player2);
 				}
 			}
 			System.out.println("Press enter to play another round. ");
@@ -142,18 +147,12 @@ public class game {
 	 * showPiles() itself displays the value of each file.
 	 */
 	public static void showPiles(int A, int B, int C) {
-		System.out.printf("Pile A: %d\nPile B: %d\nPile C: %d\n", A, B, C);
-		return;
-	}
-	
-	/**
-	 * invalidError() is a visually cleaner version of statement block below
-	 * We use this function to make our main function easier to read
-	 * invalidError() displays a generic error message
-	 */
-	public static void invalidError() {
-		System.out.print("\nInvalid Input. ");
-		System.out.println("Please try again.");
+		System.out.printf("Pile A: $%d", A);
+		System.out.println("");
+		System.out.printf("Pile B: $%d", B);
+		System.out.println("");
+		System.out.printf("Pile C: $%d", C);
+		System.out.println("");
 		return;
 	}
 
@@ -169,7 +168,56 @@ public class game {
 		if (jackpot < 0) {
 			format_pot = ("-" + format_pot);
 		}
-		System.out.printf("\nThe jackpot is %s dollars.\n", format_pot);
+		System.out.println("");
+		System.out.printf("The jackpot is %s dollars.", format_pot);
+		System.out.println("");
+		return;
+	}
+	
+	/**
+	 * 
+	 * showTotal() is just like the above
+	 * showTotal() formats the total of each player and displays it to the console
+	 */
+	public static void showTotals(int p1, int p2) {
+		//First off, we set up values to store information about who is in the lead
+		int winner, loser;
+		int wname, lname;
+		//Now, we determine who is in the lead, if anyone.
+		if (p1 > p2) {
+			winner = p1;
+			wname = 1;
+			loser = p2;
+			lname = 2;
+		} else {
+			winner = p2;
+			wname = 2;
+			loser = p1;
+			lname = 1;
+		}
+		//Next, we use a printf statement to output the information we just stored.
+		if (p1 != p2) {
+			System.out.printf("Player %d is leading, with a total of %d!", wname, winner);
+			System.out.println();
+			System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
+		} else {
+			System.out.printf("Player %d and Player %d are tied, with a total of %d!", wname, lname, winner);
+		}
+		
+		System.out.println();
+		System.out.println();
+		//Note the use of println() statements here, these will make the output look better.
+		return;
+	}
+	
+	/**
+	 * invalidError() is a visually cleaner version of statement block below
+	 * We use this function to make our main function easier to read
+	 * invalidError() displays a generic error message
+	 */
+	public static void invalidError() {
+		System.out.print("\nInvalid Input. ");
+		System.out.println("Please try again.");
 		return;
 	}
 	
