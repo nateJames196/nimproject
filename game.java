@@ -12,8 +12,8 @@ public class game {
 		Pile pileC = new Pile("C");
 		//The jackpot is special. We have to redefine its lower and upper limits
 		Pile jackpot = new Pile("Jackpot");
-		jackpot.lowerlimit = -300;
-		jackpot.upperlimit = 600;
+		jackpot.lowerlimit = -50;
+		jackpot.upperlimit = 50;
 		
 		/*The value below will be used to hold the pile the player is currently 
 		 * interacting with. Note: we are not creating an instance of the pile class here,
