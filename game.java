@@ -78,7 +78,8 @@ public class game {
 						invalidError();
 					}
 					if (active_pile.isValid() == false) {
-						System.out.println("\nThat choice is unavailable at this time. ");
+						System.out.println();
+						System.out.println("That pile is unavailable.");
 						System.out.println("Please try again.");
 					}
 				} while (validInput(input_choice) == 49 || active_pile.isValid() == false);
@@ -102,7 +103,9 @@ public class game {
 						invalidError();
 					}
 				} while (validChoice(input_choice, temp_value) == false);
-				System.out.printf("\nPLayer 1 took %c from pile %c\n", input_choice.charAt(0), active_pile.name);
+				System.out.println("");
+				System.out.printf("Player 1 took $%c from pile %c", input_choice.charAt(0), active_pile.name);
+				System.out.println("");
 				/*
 				 * Did the player empty all piles? Yes? Give the jackpot to player 2
 				 * No? Player 2 takes a turn. 
@@ -144,7 +147,12 @@ public class game {
 	 * showPiles() itself displays the value of each file.
 	 */
 	public static void showPiles(int A, int B, int C) {
-		System.out.printf("Pile A: %d\nPile B: %d\nPile C: %d\n", A, B, C);
+		System.out.printf("Pile A: $%d", A);
+		System.out.println("");
+		System.out.printf("Pile B: $%d", B);
+		System.out.println("");
+		System.out.printf("Pile C: $%d", C);
+		System.out.println("");
 		return;
 	}
 
@@ -160,7 +168,9 @@ public class game {
 		if (jackpot < 0) {
 			format_pot = ("-" + format_pot);
 		}
-		System.out.printf("\nThe jackpot is %s dollars.\n", format_pot);
+		System.out.println("");
+		System.out.printf("The jackpot is %s dollars.", format_pot);
+		System.out.println("");
 		return;
 	}
 	
@@ -186,9 +196,14 @@ public class game {
 			lname = 1;
 		}
 		//Next, we use a printf statement to output the information we just stored.
-		System.out.printf("Player %d is leading, with a total of %d!", wname, winner);
-		System.out.println();
-		System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
+		if (p1 != p2) {
+			System.out.printf("Player %d is leading, with a total of %d!", wname, winner);
+			System.out.println();
+			System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
+		} else {
+			System.out.printf("Player %d and Player %2 are tied, with a total of %d!", wname, lname, winner);
+		}
+		
 		System.out.println();
 		System.out.println();
 		//Note the use of println() statements here, these will make the output look better.
