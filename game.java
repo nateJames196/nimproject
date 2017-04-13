@@ -96,8 +96,11 @@ public class game {
 					input_choice = keyboard.nextLine();
 
 					if (validChoice(input_choice, temp_value) == true) {
-						//Read comment block above validChoice() to understand next line.
+						/*remember, an integer is different from a character
+						 * char '1' = int 1 + 48.
+						 */
 						active_pile.value -= input_choice.charAt(0) - 48;
+						player1 += input_choice.charAt(0) - 48;
 					} else {
 						//generic error text
 						invalidError();
