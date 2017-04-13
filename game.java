@@ -201,7 +201,7 @@ public class game {
 			System.out.println();
 			System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
 		} else {
-			System.out.printf("Player %d and Player %2 are tied, with a total of %d!", wname, lname, winner);
+			System.out.printf("Player %d and Player %d are tied, with a total of %d!", wname, lname, winner);
 		}
 		
 		System.out.println();
