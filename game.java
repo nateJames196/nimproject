@@ -96,8 +96,11 @@ public class game {
 					input_choice = keyboard.nextLine();
 
 					if (validChoice(input_choice, temp_value) == true) {
-						//Read comment block above validChoice() to understand next line.
+						/*remember, an integer is different from a character
+						 * char '1' = int 1 + 48.
+						 */
 						active_pile.value -= input_choice.charAt(0) - 48;
+						player1 += input_choice.charAt(0) - 48;
 					} else {
 						//generic error text
 						invalidError();
@@ -131,6 +134,7 @@ public class game {
 					showTotals(player1, player2);
 				}
 			}
+			showEnding(player1, player2);
 			System.out.println("Press enter to play another round. ");
 			quit = keyboard.nextLine();
 		}
@@ -181,6 +185,34 @@ public class game {
 	 */
 	public static void showTotals(int p1, int p2) {
 		//First off, we set up values to store information about who is in the lead
+		int winner, loser, wname, lname;
+		//Now, we determine who is in the lead, if anyone.
+		if (p1 > p2) {
+			winner = p1;wname = 1;loser = p2;lname = 2;
+		} else {
+			winner = p2;wname = 2;loser = p1;lname = 1;
+		}
+		//Next, we use a printf statement to output the information we just stored.
+		if (p1 != p2) {
+			System.out.printf("Player %d is leading, with a total of %d!", wname, winner);
+			System.out.println();
+			System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
+		} else {
+			System.out.printf("Player %d and Player %d are tied, with a total of %d!", wname, lname, winner);
+		}
+		
+		System.out.println();
+		System.out.println();
+		//Note the use of println() statements here, these will make the output look better.
+		return;
+	}
+	
+	/**
+	 * 
+	 * showEnding is showTotal() but with different output.
+	 */
+	public static void showEnding(int p1, int p2) {
+		//First off, we set up values to store information about who is in the lead
 		int winner, loser;
 		int wname, lname;
 		//Now, we determine who is in the lead, if anyone.
@@ -197,11 +229,11 @@ public class game {
 		}
 		//Next, we use a printf statement to output the information we just stored.
 		if (p1 != p2) {
-			System.out.printf("Player %d is leading, with a total of %d!", wname, winner);
+			System.out.printf("Player %d is the winner, with a total of %d!", wname, winner);
 			System.out.println();
-			System.out.printf("Player %d is trailing with a total of %d.", lname, loser);
+			System.out.printf("Player %d is the loser, with a total of %d.", lname, loser);
 		} else {
-			System.out.printf("Player %d and Player %d are tied, with a total of %d!", wname, lname, winner);
+			System.out.printf("Its a tie! Both players have a total of %d!", winner);
 		}
 		
 		System.out.println();
