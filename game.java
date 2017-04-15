@@ -107,7 +107,7 @@ public class game {
 					}
 				} while (validChoice(input_choice, temp_value) == false);
 				System.out.println("");
-				System.out.printf("Player 1 took $%c from pile %c", input_choice.charAt(0), active_pile.name);
+				System.out.printf("Player 1 took $%c from Pile %c", input_choice.charAt(0), active_pile.name);
 				System.out.println("");
 				/*
 				 * Did the player empty all piles? Yes? Give the jackpot to player 2
@@ -119,7 +119,11 @@ public class game {
 					player2 += jackpot.value;
 					gameactive = false;
 				} else {
-					enemyTurn();
+					active_pile = enemyChoice(pileA, pileB, pileC);
+					active_pile.value -= 1;
+					player2 += 1;
+					System.out.printf("Player 2 took $%c from Pile %c", 1, active_pile.name);
+					System.out.println("");
 				}
 				/*
 				 * Did the opponent empty all piles? Yes? Give the jackpot to player 1
@@ -140,9 +144,20 @@ public class game {
 		}
 	}
 	
-	public static void enemyTurn() {
-		//TODO
-		return;
+	/**
+	 * enemyTurn() receives all three piles as arguments, and returns its choice
+	 */
+	public static Pile enemyChoice(Pile A, Pile B, Pile C) {
+		Pile p_choice;
+		//A available? pick A. B available? pick B. Otherwise pick B
+		if (A.isValid() == true) {
+			p_choice = A;
+		} else if (B.isValid() == true) {
+			p_choice = B;
+		} else {
+			p_choice = C;
+		}
+		return p_choice;
 	}
 
 	/**
