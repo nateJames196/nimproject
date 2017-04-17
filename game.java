@@ -1,5 +1,6 @@
 //package nimproject;
 
+import java.util.Random;
 import java.util.Scanner;
 
 //class name can be anything, but it must be defined in its own file.
@@ -27,7 +28,7 @@ public class game {
 		int player2 = 0;
 
 		//Value denotes whether or not the game is actively accepting input.
-		boolean gameactive = true;
+		boolean gameactive;
 		
 		//Instance of a scanner object, which we can use to take player input.
 		Scanner keyboard = new Scanner(System.in);
@@ -44,8 +45,9 @@ public class game {
 			pileA.setVal();
 			pileB.setVal();
 			pileC.setVal();
-			jackpot.setVal();
+			jackpot.setJack();
 			active_pile = pileA;
+			gameactive = true;
 
 			//While loop that runs until the jackpot has been taken
 			while (gameactive == true) {
@@ -107,11 +109,11 @@ public class game {
 					}
 				} while (validChoice(input_choice, temp_value) == false);
 				System.out.println("");
-				System.out.printf("Player 1 took $%c from Pile %c", input_choice.charAt(0), active_pile.name);
+				System.out.printf("Player 1 took $%c from pile %c", input_choice.charAt(0), active_pile.name);
 				System.out.println("");
 				/*
 				 * Did the player empty all piles? Yes? Give the jackpot to player 2
-				 * No? Player 2 takes a turn. 
+				 * No? Player 2 takes a turn. See "AI FUNCTIONS" section
 				 */
 				boolean jpot_available;
 				jpot_available = jackpotCheck(pileA.value, pileB.value, pileC.value);
@@ -120,18 +122,21 @@ public class game {
 					gameactive = false;
 				} else {
 					active_pile = enemyChoice(pileA, pileB, pileC);
-					active_pile.value -= 1;
-					player2 += 1;
-					System.out.printf("Player 2 took $%c from Pile %c", 1, active_pile.name);
+					int validcount = countValids(pileA, pileB, pileC);
+					int e_pick = enemyPick(active_pile, jackpot.value, validcount);
+					active_pile.value -= e_pick;
+					player2 += e_pick;
+					System.out.printf("Player 2 took $%d from pile %c", e_pick, active_pile.name);
 					System.out.println("");
 				}
 				/*
-				 * Did the opponent empty all piles? Yes? Give the jackpot to player 1
+				 * Did the opponent take a turn and empty all piles? Yes? 
+				 * Give the jackpot to player 1.
 				 * No? Show the standings and return to the beginning of the loop
-				 * so the player can take another turn.
+				 * Allow the player can take another turn.
 				 */
 				jpot_available = jackpotCheck(pileA.value, pileB.value, pileC.value);
-				if (jpot_available == true) {
+				if (jpot_available == true && gameactive == true) {
 					player1 += jackpot.value;
 					gameactive = false;
 				} else {
@@ -144,21 +149,117 @@ public class game {
 		}
 	}
 	
+	//--------------------------------AI FUNCTIONS----------------------------------------------
+	
 	/**
 	 * enemyTurn() receives all three piles as arguments, and returns its choice
 	 */
 	public static Pile enemyChoice(Pile A, Pile B, Pile C) {
-		Pile p_choice;
-		//A available? pick A. B available? pick B. Otherwise pick B
-		if (A.isValid() == true) {
-			p_choice = A;
-		} else if (B.isValid() == true) {
-			p_choice = B;
-		} else {
-			p_choice = C;
+		if (countValids(A, B, C) > 1) {
+			return randomSelect(A, B, C);
 		}
+		/* randomSelect() uses a do..while, so we use the block of code below to save time
+		 * when we know there's only one valid option.
+		 */
+		if (A.isValid() == true) {
+			return A;
+		} else if (B.isValid() == true) {
+			return B;
+		} else {
+			return C;
+		}
+	}
+	
+	/**
+	 * randomSelect() receives all three piles as arguments, and selects randomly from
+	 * the three. If it selects a pile that is not valid, it will try again until it doesn't.
+	 * Returns a pile.
+	 */
+	public static Pile randomSelect(Pile A, Pile B, Pile C) {
+		Pile p_choice;
+		int n_choice;
+		Random rando = new Random();
+		/*
+		 * This do while loop will run until a valid pile has been selected.
+		 * rando.nextInt(2) returns 0, 1 or 2. we increase that outcome by 1 and get 1, 2 or 3
+		 * we set p_choice to A by default so the compiler won't complain, but we don't need to.
+		 */
+		p_choice = A;
+		System.out.println("markkr");
+		do {
+			n_choice = rando.nextInt(2) + 1;
+			switch (n_choice) {
+			    case 1:
+			    	p_choice = A;
+			    	break;
+			    case 2:
+			    	p_choice = B;
+			    	break;
+			    case 3:
+			    	p_choice = C;
+			    	break;
+			}
+		} while (p_choice.isValid() != true);
+		System.out.println("makr");
 		return p_choice;
 	}
+	
+	/**
+	 * choice is the pile our Ai has selected
+	 * pot is the jackpot
+	 * v_count is the number of active piles
+	 */
+	
+	public static int enemyPick(Pile choice, int potval, int v_count) {
+		//Unless this is the only available pile, take the largest amount possible.
+		if (v_count > 1) {
+			return choice.getMax();
+		}
+		if (choice.value == 1) {
+			return 1;
+		}
+		/* We now know we have only one pile left, every line after this uses that assumption.
+		 * We also know the selection has a value of 2 or more, so we don't need to check
+		 */
+		
+		/* If the jackpot is above zero, so the AI tries to leave the player with 6
+		 * No matter what the player takes they will leave a value between 5 and 2.
+		 * The AI takes enough to leave choice.value at 1 so the opponent must empty the pile.
+		 */
+		if (potval > 0) {
+			//value is under 5, and we already know the value is 2+, so we take enough leave 1
+			if (choice.value <= 5) {
+				return choice.getMax() - 1;
+			}
+			//The AI can leave a multiple of six, so it does!
+			if (choice.value % 6 != 0 && choice.value % 6 < 5) {
+				return choice.value % 6;
+			}
+			//the AI cannot leave a multiple of six so it takes as much as it can.
+			return choice.getMax();
+		}
+		/* If the jackpot is below zero, the AI won't want it, so it tries to take the last 
+		 * piece. It tries to leave the player with a value of 5.
+		 * No matter what the player takes they will leave a value between 4 and 1.
+		 * The AI will take the rest of the pile, forcing the player to take the jackpot.
+		 */
+		if (potval < 0) {
+			//value is 4 or less so the AI takes the rest of the pile.
+			if (choice.value <= 4) {
+				return choice.value;
+			}
+			//value is not a multiple of 5 so the AI makes it a multiple of five.
+			if (choice.value % 5 != 0) {
+				return choice.value % 5;
+			}
+			//value is a multiple of 5 and it must take something, so it takes the most possible
+			return choice.getMax();
+		}
+		//Shouldn't happen, but just in case
+		return 1;
+	}
+	
+	//------------------------------------FORMATTING FUNCTIONS----------------------------------
 
 	/**
 	 * showPiles(); is visually cleaner than the messy printf below
@@ -268,6 +369,8 @@ public class game {
 		return;
 	}
 	
+	//-------------------------------INPUT VALIDATION FUNCTIONS---------------------------------
+	
 	/**
 	 * validInput() checks for three different formats of input, in order.
 	 * Single character: "A"
@@ -327,10 +430,26 @@ public class game {
 		return true;
 	}
 	
+	//---------------------------------MISCELLANEOUS FUNCTIONS----------------------------------
+	
 	public static boolean jackpotCheck(int A, int B, int C) {
 		if (A == 0 && A == B && A == C) {
 			return true;
 		}
 		return false;
+	}
+	
+	public static int countValids(Pile A, Pile B, Pile C) {
+		int count = 0;
+		if (A.isValid() == true) {
+			count++;
+		}
+		if (B.isValid() == true) {
+			count++;
+		}
+		if (C.isValid() == true){
+			count++;
+		}
+		return count;
 	}
 }
