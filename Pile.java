@@ -1,4 +1,4 @@
-package nimproject;
+//package nimproject;
 
 import java.util.Random;
 /**
@@ -32,6 +32,37 @@ public class Pile {
 			this.value = this.lowerlimit;
 		}
 		return;
+	}
+	
+	/**
+	 * jackpot is special, so we follow different rules.
+	 * The difference between 50 and -50 is 100, so we can write rando.nextInt(100) and be fine.
+	 * However, if we want to change it we can use the code I've written below,
+	 * Math.abs() receives a number and outputs its "absolute value", which is always positive.
+	 * We than add the absolute value together to get the distance between our numbers.
+	 * This will not work correctly if lowerlimit is changed to a positive number.
+	 * Otherwise it functions more or less the same as setVal
+	 */
+	
+	public void setJack() {
+		Random rando = new Random();
+		this.value = rando.nextInt(Math.abs(this.upperlimit) + Math.abs(this.lowerlimit));
+		this.value -= this.upperlimit;
+		if (this.value > this.upperlimit) {
+			this.value = this.upperlimit;
+		}
+		if (this.value == 0) {
+			this.value = this.lowerlimit;
+		}
+		return;
+	}
+	
+	public int getMax() {
+		if (this.value > 3) {
+			return 4;
+		} else {
+			return this.value;
+		}
 	}
 	
 	public boolean isValid() {

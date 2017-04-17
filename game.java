@@ -45,7 +45,7 @@ public class game {
 			pileA.setVal();
 			pileB.setVal();
 			pileC.setVal();
-			jackpot.setVal();
+			jackpot.setJack();
 			active_pile = pileA;
 			gameactive = true;
 
