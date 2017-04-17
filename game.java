@@ -185,7 +185,6 @@ public class game {
 		 * we set p_choice to A by default so the compiler won't complain, but we don't need to.
 		 */
 		p_choice = A;
-		System.out.println("markkr");
 		do {
 			n_choice = rando.nextInt(2) + 1;
 			switch (n_choice) {
@@ -200,7 +199,6 @@ public class game {
 			    	break;
 			}
 		} while (p_choice.isValid() != true);
-		System.out.println("makr");
 		return p_choice;
 	}
 	
