@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 //class name can be anything, but it must be defined in its own file.
-public class game {
+public class April19 {
 	
 	public static void main(String[] args) {
 		//Setting up instances of our pile class
@@ -225,30 +225,30 @@ public class game {
 		 * The AI takes enough to leave choice.value at 1 so the opponent must empty the pile.
 		 */
 		if (potval > 0) {
-			//value is under 5, and we already know the value is 2+, so we take enough leave 1
-			if (choice.value <= 5) {
+			//value is under 6, and we already know the value is 2+, so we take enough leave 1
+			if (choice.value <= 6) {
 				return choice.getMax() - 1;
 			}
 			//The AI can leave a multiple of six, so it does!
-			if (choice.value % 6 != 0 && choice.value % 6 < 5) {
-				return choice.value % 6;
+			if (choice.value % 7 != 0 && choice.value % 7 < 6) {
+				return choice.value % 7;
 			}
 			//the AI cannot leave a multiple of six so it takes as much as it can.
 			return choice.getMax();
 		}
 		/* If the jackpot is below zero, the AI won't want it, so it tries to take the last 
-		 * piece. It tries to leave the player with a value of 5.
-		 * No matter what the player takes they will leave a value between 4 and 1.
+		 * piece. It tries to leave the player with a value of 6.
+		 * No matter what the player takes they will leave a value between 5 and 1.
 		 * The AI will take the rest of the pile, forcing the player to take the jackpot.
 		 */
 		if (potval < 0) {
 			//value is 4 or less so the AI takes the rest of the pile.
-			if (choice.value <= 4) {
+			if (choice.value <= 5) {
 				return choice.value;
 			}
-			//value is not a multiple of 5 so the AI makes it a multiple of five.
-			if (choice.value % 5 != 0) {
-				return choice.value % 5;
+			//value is not a multiple of 6 so the AI makes it a multiple of six.
+			if (choice.value % 6 != 0) {
+				return choice.value % 6;
 			}
 			//value is a multiple of 5 and it must take something, so it takes the most possible
 			return choice.getMax();
@@ -413,7 +413,7 @@ public class game {
 		 */
 		int choice = input.charAt(0) - 48;
 		//4 or more. Number is too big.
-		if (choice > 4) {
+		if (choice > 5) {
 			return false;
 		}
 		//0 or less. Number is too small.
