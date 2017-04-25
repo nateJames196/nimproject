@@ -2,12 +2,13 @@ import java.util.Random;
 
 public class DESTROYER {
 
-	//DESTROYERS HAVE A FEAST OF NAMES. AN ASSAULT ON THE ABILITY TO SENSE AWESOMENESS
+	//The Destroyer's name is randomly generated using the DESTROYER.getTitle() function
 	public String getName() {
 		DESTROYER D = new DESTROYER();
 		return D.getTitle();
 	}
-	
+
+	//This represents the Destroyer's AI
 	public move move(GameBoard G) {
 		//D will represent an instance of our destroyer class. We must do this in order to use its methods.
 		DESTROYER D = new DESTROYER();
@@ -17,26 +18,24 @@ public class DESTROYER {
 		heap[1] = G.getB();//We continue in the same way for each pile and index.
 		heap[2] = G.getC();
 		
-		
+		//The destroyer will choose the pile with most money and take from it. GreedyPlayer but BETTER
 		int maxTake = Math.max(Math.max(heap[0], heap[1]), heap[2]); // Which pot has the most money?
 		int n = 0;
 		while (heap[n] < maxTake) {
 			n = (n + 1) % 3; 
 		}
 		
-		//int p = D.choosePile(heap[0], heap[1], heap[2], D);//feed choosePile() the value of each pile.
-		
+		//Now that we have chosen a pile, we have our destroyer choose how much to take from it
 		int validcount = D.countValids(heap[0], heap[1], heap[2], D);
 		int take = D.chooseTake(heap[n], G.getPot(), D, validcount);//feed chooseTake our chosen pile and the jackpot
 	
 		return new move(n, take);
 	}
 	
-	public int choosePile(int A, int B, int C, DESTROYER D) {
-		//The DESTROYER always tries to take from the largest pile
-		return Math.max(Math.max(A, B), C);
-	}
-	
+	/**
+	 * This is the Pile.isValid() function from our original source, but in this case, its a method of Destroyer
+	 * and recieves the Pile's value as an argument.
+	 */
 	public boolean checkValid(int Pileval) {
 		//is the value of our integer above zero? Yes? Return true.
 		if (Pileval > 0) {
@@ -46,9 +45,13 @@ public class DESTROYER {
 		return false;
 	}
 	
+	/**
+	 * This is a port of the countValids() function from our original source. Again, we pass a Destroyer instance as an 
+	 * argument. This returns the number of piles with a value of 1 or more.
+	 */
 	public int countValids(int A, int B, int C, DESTROYER D) {
 		int n = 0;
-		//Increment n every time we find a valid pile.
+		//Increment n each time we find a valid pile.
 		if (D.checkValid(A)) {
 			n++;
 		}
@@ -62,6 +65,10 @@ public class DESTROYER {
 		return n;
 	}
 	
+	/**
+	 * This is more or less a 1 to 1 port of our enemyChoice() function. choice.value becmoes choice, potval becomes pot,
+	 * v_count is the same, and we have to feed a destroyer to the function as an argument so we can use its methods.
+	 */
 	public int chooseTake(int choice, int pot, DESTROYER D, int v_count) {
 		//Unless this is the only available pile, take the largest amount possible.
 		if (v_count > 1) {
@@ -111,12 +118,29 @@ public class DESTROYER {
 		return 1;
 	}
 	
-	//Determines the max amount we can take
+	/**
+	 * Determines the max amount we can take. Ported from Pile.getMax(). Recieves the value of a pile as an integer rather
+	 * than using this.value. Like Math.max, Math.min will return the smaller of the two integers you feed to it.
+	 */
 	public int getMax(int A) {
 		return Math.min(A, 5);
 	}
 	
-	//getTitle() is only for fun.
+	/**
+	 * Generates a random number from 0 to 4, and then uses that number to run a switch statement to choose the output of
+	 * getTitle(). Note, this could also be done with an array of strings, in which case the code would look more like this:
+	 * String[] output = new String[5];
+	 * output[0] = "DOMINATOR OF THE WEAK";
+	 * output[1] = "ENDER OF WELLBEING";
+	 * ...etc.
+	 * Once our array is set up we would use write a return statement like so:
+	 * return output[rando.nextInt(4)];
+	 * We could go further and use a value of n to set up the size of our string array:
+	 * int n = 5;
+	 * String[] output = new String[n];
+	 * and make a more modular return:
+	 * return output[rando.nextint(n-1)];
+	 */
 	public String getTitle() {
 		Random rando = new Random();
 		//rando.nextInt(4) produces a value between 0 and 4
