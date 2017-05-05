@@ -3,8 +3,11 @@
 import java.util.Random;
 import java.util.Scanner;
 
-//class name can be anything, but it must be defined in its own file.
-public class April19 {
+/**
+ * Game is the name of the file that holds our main() method. It utilizes instances of a class called Pile, and handles player
+ * input using a combination of a Scanner Object and nested while... and do...while loops.
+ */
+public class Game {
 	
 	public static void main(String[] args) {
 		//Setting up instances of our pile class
@@ -144,7 +147,7 @@ public class April19 {
 				}
 			}
 			showEnding(player1, player2);
-			System.out.println("Press enter to play another round. ");
+			System.out.println("Press enter to play another round. Enter anything else to quit.");
 			quit = keyboard.nextLine();
 		}
 	}
@@ -152,7 +155,12 @@ public class April19 {
 	//--------------------------------AI FUNCTIONS----------------------------------------------
 	
 	/**
-	 * enemyTurn() receives all three piles as arguments, and returns its choice
+	 * enemyTurn() receives all three piles from main() as arguments, and then choses between them.
+	 * @param A pile
+	 * @param B pile
+	 * @param C pile
+	 * @return pile. If the number of valid piles is greater than 1, chooses randomly. Else, chooses
+	 * the only pile.
 	 */
 	public static Pile enemyChoice(Pile A, Pile B, Pile C) {
 		if (countValids(A, B, C) > 1) {
@@ -171,9 +179,12 @@ public class April19 {
 	}
 	
 	/**
-	 * randomSelect() receives all three piles as arguments, and selects randomly from
-	 * the three. If it selects a pile that is not valid, it will try again until it doesn't.
-	 * Returns a pile.
+	 * randomSelect() receives all three piles as arguments, and selects randomly among
+	 * the three. If it selects a pile that is not valid, will continue.
+	 * @param A Pile
+	 * @param B Pile
+	 * @param C Pile
+	 * @return Pile. random choice based on a switch statement.
 	 */
 	public static Pile randomSelect(Pile A, Pile B, Pile C) {
 		Pile p_choice;
@@ -203,11 +214,15 @@ public class April19 {
 	}
 	
 	/**
-	 * choice is the pile our Ai has selected
-	 * pot is the jackpot
-	 * v_count is the number of active piles
+	 * enemyPick() represents the bulk of the computer player's AI. Note that it does not take
+	 * information about two of the three piles, so its decisions will lack the nuance of a
+	 * human or an ECPLAYER
+	 * @param choice The pile the AI has selected
+	 * @param potval The current value of the jackpot.
+	 * @param v_count The number of currently active piles
+	 * @return returns an integer between 1 and 5, preferring 5 and preferring other numbers based on
+	 * the number of active piles and the value of the jackpot.
 	 */
-	
 	public static int enemyPick(Pile choice, int potval, int v_count) {
 		//Unless this is the only available pile, take the largest amount possible.
 		if (v_count > 1) {
@@ -260,9 +275,11 @@ public class April19 {
 	//------------------------------------FORMATTING FUNCTIONS----------------------------------
 
 	/**
-	 * showPiles(); is visually cleaner than the messy printf below
-	 * we use this function to ensure that only logic appears in the main function
-	 * showPiles() itself displays the value of each file.
+	 * showPiles() has no return value. Its main purpose is to display information about the piles
+	 * in a way that it compact. One line "showPiles();" is better than six lines.
+	 * @param A int, represents the value property of a Pile.
+	 * @param B int, represents the value property of a Pile.
+	 * @param C int, represents the value property of a Pile.
 	 */
 	public static void showPiles(int A, int B, int C) {
 		System.out.printf("Pile A: $%d", A);
@@ -275,10 +292,8 @@ public class April19 {
 	}
 
 	/**
-	 * 
-	 * showJackpot() is used for the same reason as showPiles()
-	 * showJackpot formats the jackpot and displays it.
-	 * if we can, we want the main function to only contain game logic
+	 * showJackpot() has no return value. Like showPiles(), its function is to reduce visual clutter
+	 * @param jackpot int, represents the value property of the Pile named jackpot
 	 */
 	public static void showJackpot(int jackpot) {
 		//Preformatting to prevent ugly stuff like "$-38 dollars"
@@ -293,9 +308,10 @@ public class April19 {
 	}
 	
 	/**
-	 * 
-	 * showTotal() is just like the above
-	 * showTotal() formats the total of each player and displays it to the console
+	 * showTotal() is another formatting function. We take the total of each player and display
+	 * either player 1 winning, player 2 winning, or both players tied.
+	 * @param p1 int, represents the total of a player
+	 * @param p2 int, represents the total of a player
 	 */
 	public static void showTotals(int p1, int p2) {
 		//First off, we set up values to store information about who is in the lead
@@ -322,8 +338,11 @@ public class April19 {
 	}
 	
 	/**
-	 * 
-	 * showEnding is showTotal() but with different output.
+	 * showEnding() is very similar to showTotal(). In fact, ideally these functions would be
+	 * combined and take a boolean argument to determine how to modify the output. See the
+	 * documentation for showTotal()
+	 * @param p1 int, represents the total associated with player 1
+	 * @param p2 int, represents the total associated with player 2
 	 */
 	public static void showEnding(int p1, int p2) {
 		//First off, we set up values to store information about who is in the lead
@@ -357,9 +376,7 @@ public class April19 {
 	}
 	
 	/**
-	 * invalidError() is a visually cleaner version of statement block below
-	 * We use this function to make our main function easier to read
-	 * invalidError() displays a generic error message
+	 * invalidError() displays a generic error message. Its main purpose is to reduce visual clutter.
 	 */
 	public static void invalidError() {
 		System.out.print("\nInvalid Input. ");
@@ -376,6 +393,8 @@ public class April19 {
 	 * Pile without space: "PileC"
 	 * If it finds a valid name, it will return it as a character.
 	 * If it cannot find a valid pile name, it will return 1 (failure.)
+	 * @param input String
+	 * @return returns a character, A, B, C or 1. 1 indicates that input was not a valid name.
 	 */
 	public static char validInput(String input) {
 		if (input.length() == 0) {
@@ -395,7 +414,23 @@ public class April19 {
 		}
 		//A return value of 1 indicates failure.
 	}
-		
+	
+	/**
+	 * validChoice() validates the user input based on length, value and the total of a pile
+	 * First, we check to see if the string we recieved from the player contains any characters.
+	 * No? The string is invalid, return false.
+	 * Second, we check the first character of the string, and see if its matches an integer
+	 * if the first character is not between character values 48 - 58 (0-9), return false
+	 * Third, we create a temporary variable, choice, of the type int based on the first character of
+	 * input. This means that inputs like 12 will be accepted, but 12 will never actually be used.
+	 * Fourth, we check if choice is greater than 5. Yes? return false.
+	 * Fifth, we check if choice is below 0. Yes? return false.
+	 * Sixth, we check if choice is greater than total. Yes? return false
+	 * Our number passed all of our checks, so we can return true.
+	 * @param input String, represents an input received from the player
+	 * @param total int, represents the value of a pile
+	 * @return boolean, true or false based on total and input's length and first character.
+	 */
 	public static boolean validChoice(String input, int total) {
 		//String was too short. Invalid.
 		if (input.length() == 0) {
@@ -412,7 +447,7 @@ public class April19 {
 		 * 2. Has a number at index 0, so we know we can use it in an int.
 		 */
 		int choice = input.charAt(0) - 48;
-		//4 or more. Number is too big.
+		//6 or more. Number is too big.
 		if (choice > 5) {
 			return false;
 		}
@@ -420,7 +455,7 @@ public class April19 {
 		if (choice <= 0) {
 			return false;
 		}
-		//between 1 and 3, but higher than total. Number is too big.
+		//between 1 and 5, but higher than total. Number is too big.
 		if (choice > total) {
 			return false;
 		}
@@ -430,6 +465,15 @@ public class April19 {
 	
 	//---------------------------------MISCELLANEOUS FUNCTIONS----------------------------------
 	
+	/**
+	 * jackpotCheck() determines whether or not the jackpot is available to take. Note that it 
+	 * does not directly check whether A, B, or C is equal to zero. Rarely, the jackpot can be
+	 * taken a little early.
+	 * @param A int, represents the value of a Pile.
+	 * @param B int, represents the value of a Pile.
+	 * @param C int, represents the value of a Pile.
+	 * @return boolean, returns true if A, B, and C are equal. otherwise returns false
+	 */
 	public static boolean jackpotCheck(int A, int B, int C) {
 		if (A == 0 && A == B && A == C) {
 			return true;
@@ -437,6 +481,15 @@ public class April19 {
 		return false;
 	}
 	
+	/**
+	 * countValids() takes all active piles and outputs the total number of Piles that are currently
+	 * acceptable for the player to take money from. Jackpot is special, so we do not include it.
+	 * @param A Pile, represents a Pile.
+	 * @param B Pile, represents a Pile.
+	 * @param C Pile, represents a Pile.
+	 * @return int, returns the number of times that Pile.isValid() evaluated to true. ranges 
+	 * from 0 to 3, athough in practice it will return 1 to 3.
+	 */
 	public static int countValids(Pile A, Pile B, Pile C) {
 		int count = 0;
 		if (A.isValid() == true) {

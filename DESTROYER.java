@@ -2,13 +2,28 @@ import java.util.Random;
 
 public class DESTROYER {
 
-	//The Destroyer's name is randomly generated using the DESTROYER.getTitle() function
+	/**
+	 * getName() shares a name with RandomPlayer.getName() and GreedyPlayer.getName(), and returns
+	 * the same type of value, a String. However, it uses a function to output a randomly changing
+	 * name.
+	 * @return String, getTitle() outputs a randomly selected string representing the name of the
+	 * DESTROYER. We define a destroyer instance in order to get at its methods, although
+	 * this.getTitle() would have been faster and more compact.
+	 */
 	public String getName() {
 		DESTROYER D = new DESTROYER();
 		return D.getTitle();
 	}
 
-	//This represents the Destroyer's AI
+	/**
+	 * move() is a representation of the DESTROYER's main AI. It uses a heap and a small improvement
+	 * over the GreedyPlayer's move selection function in order to choose which pile to take from.
+	 * The amount it actually takes from the pile in question is controlled by a port of 
+	 * game.enemyChoice() from the original source code.
+	 * @param G GameBoard, represents the active instance of the gameboard object
+	 * @return move array(an array with the type move). Returns an integer representing the INDEX of
+	 * an active pile, and a number to take from it.
+	 */
 	public move move(GameBoard G) {
 		//D will represent an instance of our destroyer class. We must do this in order to use its methods.
 		DESTROYER D = new DESTROYER();
@@ -33,8 +48,9 @@ public class DESTROYER {
 	}
 	
 	/**
-	 * This is the Pile.isValid() function from our original source, but in this case, its a method of Destroyer
-	 * and recieves the Pile's value as an argument.
+	 * checkValid() is a port of Pile.isValid(), but in this case its a method of our destroyer.
+	 * @param Pileval int, determines if the DESTROYER can take from a pile that has this value.
+	 * @return boolean, returns true if Pileval is 1 or more. otherwise returns false.
 	 */
 	public boolean checkValid(int Pileval) {
 		//is the value of our integer above zero? Yes? Return true.
@@ -46,8 +62,15 @@ public class DESTROYER {
 	}
 	
 	/**
-	 * This is a port of the countValids() function from our original source. Again, we pass a Destroyer instance as an 
-	 * argument. This returns the number of piles with a value of 1 or more.
+	 * countValids() is a port of game.countValids() from the orginal source. We pass an instance of
+	 * DESTROYER as an argument so we can use its methods. D.checkValid is only possible for this
+	 * reason.
+	 * @param A int, represents the value of a pile
+	 * @param B int, represents the value of a pile
+	 * @param C int, represents the value of a pile
+	 * @param D DESTROYER, represents an instance of the DESTROYER class
+	 * @return int n, which is incremented whenever a pile is discovered to be valid. ranges from
+	 * 0 to 3.
 	 */
 	public int countValids(int A, int B, int C, DESTROYER D) {
 		int n = 0;
@@ -66,8 +89,16 @@ public class DESTROYER {
 	}
 	
 	/**
-	 * This is more or less a 1 to 1 port of our enemyChoice() function. choice.value becmoes choice, potval becomes pot,
-	 * v_count is the same, and we have to feed a destroyer to the function as an argument so we can use its methods.
+	 * chooseTake() is almost identical to enemyChoice() from our original source. Choice.value 
+	 * becomes simply "choice", although pot and v_count are almost the same. D is an instance of
+	 * destroyer, which allows us to make statments like D.getMax() although this.getMax() or simply
+	 * getmax() would probably be better.
+	 * @param choice int, represents the value of a pile.
+	 * @param pot int, represents the value of a jackpot.
+	 * @param D DESTROYER, represents an arbitrary instance of a destroyer object.
+	 * @param v_count int, represents the number of piles it is acceptable for the player to take
+	 * from.
+	 * @return int, represents the number the AI will try to take from the pile it has chosen.
 	 */
 	public int chooseTake(int choice, int pot, DESTROYER D, int v_count) {
 		//Unless this is the only available pile, take the largest amount possible.
@@ -119,27 +150,22 @@ public class DESTROYER {
 	}
 	
 	/**
-	 * Determines the max amount we can take. Ported from Pile.getMax(). Recieves the value of a pile as an integer rather
-	 * than using this.value. Like Math.max, Math.min will return the smaller of the two integers you feed to it.
+	 * getMax() returns the highest possible amount the DESTROYER can take from a pile.
+	 * Ported version of Pile.getMax().
+	 * @param A int, represents the value of a pile.
+	 * @return integer, returns either 5 or the value of the pile, whichever is smaller.
 	 */
 	public int getMax(int A) {
 		return Math.min(A, 5);
 	}
 	
 	/**
-	 * Generates a random number from 0 to 4, and then uses that number to run a switch statement to choose the output of
-	 * getTitle(). Note, this could also be done with an array of strings, in which case the code would look more like this:
-	 * String[] output = new String[5];
-	 * output[0] = "DOMINATOR OF THE WEAK";
-	 * output[1] = "ENDER OF WELLBEING";
-	 * ...etc.
-	 * Once our array is set up we would use write a return statement like so:
-	 * return output[rando.nextInt(4)];
-	 * We could go further and use a value of n to set up the size of our string array:
-	 * int n = 5;
-	 * String[] output = new String[n];
-	 * and make a more modular return:
-	 * return output[rando.nextint(n-1)];
+	 * getTitle() Generates a random number from 0 to 4 and uses that number to run a switch 
+	 * statement that supplies a value to a variable called output. Note, this could also be done 
+	 * with an array of strings.
+	 * @return String, output. Output is defined based on a switch statement that recieves its value
+	 * from Random.nextint();  Note that in class, case 4 never occured. This might be wrong, but it 
+	 * appears that rando.nextInt(x) may not actually be inclusive. 
 	 */
 	public String getTitle() {
 		Random rando = new Random();
@@ -169,4 +195,18 @@ public class DESTROYER {
 		}
 		return output;
 	}
+	/*
+	 * Example array based code:
+	 * String[] output = new String[5];
+	 * output[0] = "DOMINATOR OF THE WEAK";
+	 * output[1] = "ENDER OF WELLBEING";
+	 * ...etc.
+	 * Once our array is set up we would use write a return statement like so:
+	 * return output[rando.nextInt(4)];
+	 * We could go further and use a value of n to set up the size of our string array:
+	 * int n = 5;
+	 * String[] output = new String[n];
+	 * and make a more modular return:
+	 * return output[rando.nextint(n-1)];
+	 */
 }
